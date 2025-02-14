@@ -17,8 +17,9 @@ int main(int argc, char **argv)
 {
 
     char buf[SIZE_BUF] = { 0 };
-    int fd = 0;;
-    struct addrinfo *result;
+    int sockfd = 0;;
+    struct addrinfo *result = NULL;
+    struct addrinfo *temp = NULL;
     struct addrinfo hints = {0};
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
@@ -29,9 +30,18 @@ int main(int argc, char **argv)
     int info = getaddrinfo(NAME_HOST, NAME_SERVICE, &hints, &result);
     if (info != 0) {
 	printf("getaddinfo error\n");
-       exit(0);
+       exit(1);
     }
 
+    for(temp = result; temp != NULL; temp = temp->ai_next) {
+		sockfd = socket(temp->ai_family, temp->ai_socktype, temp->ai_protocol);
+		if (sockfd == -1)
+			continue;
+		if (connect(sockfd, temp->ai_addr, temp->ai_addrlen) == 0) {
+			break;
+		}
+		close (sockfd);
+	}
     printf("Hello world!\n");
     return 0;
 }
