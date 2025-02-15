@@ -15,7 +15,14 @@
 
 int main(int argc, char **argv)
 {
-
+    #if 0
+    if (argc < 3) {
+		printf("you must enter the font name as the first argument and the text to convert as the second argument");
+		exit(1);
+	}
+    #endif
+    char *font = argv[1];
+	char *text = argv[2];
     char buf[SIZE_BUF] = { 0 };
     int sockfd = 0;;
     struct addrinfo *result = NULL;
@@ -29,8 +36,8 @@ int main(int argc, char **argv)
 
     int info = getaddrinfo(NAME_HOST, NAME_SERVICE, &hints, &result);
     if (info != 0) {
-	printf("getaddinfo error\n");
-       exit(1);
+	    printf("getaddinfo error\n");
+        exit(1);
     }
 
     for(temp = result; temp != NULL; temp = temp->ai_next) {
@@ -40,8 +47,16 @@ int main(int argc, char **argv)
 		if (connect(sockfd, temp->ai_addr, temp->ai_addrlen) == 0) {
 			break;
 		}
-		close (sockfd);
-	}
+		close(sockfd);
+    }
+
+    if(temp == NULL){
+       printf("connect error\n");
+       exit(1);
+    }
+    freeaddrinfo(result);
+
+
     printf("Hello world!\n");
     return 0;
 }
