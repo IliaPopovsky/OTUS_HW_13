@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 	exit(1);
     }
     #endif
-    char buf[SIZE_BUF * 4] = {0};
+    char buf[SIZE_BUF] = {0};
     char query[SIZE_BUF] = {0};
     int length = 0;
     int number_read = 0;
@@ -71,7 +71,9 @@ int main(int argc, char **argv)
 	printf("write error.\n");
 	exit(1);
     }
-    //memset(buf, 0, SIZE_BUF);
+    length = 0;
+    number_read = 0;
+    memset(buf, 0, SIZE_BUF);
     while( (number_read = read(sockfd, &buf[length], SIZE_BUF - length)) > 0){
 	    length = length + number_read;
 	    if (buf[length - 1] == '.' && buf[length - 2] == '\n')
