@@ -15,14 +15,13 @@
 
 int main(int argc, char **argv)
 {
+    #if 0
     if (argc < 3) {
 	printf("you must enter the font name as the first argument and the text to convert as the second argument");
 	exit(1);
     }
-    
-    char *font = argv[1];
-	char *text = argv[2];
-    char buf[SIZE_BUF] = {0};
+    #endif
+    char buf[SIZE_BUF * 4] = {0};
     char query[SIZE_BUF] = {0};
     int length = 0;
     int number_read = 0;
@@ -59,23 +58,24 @@ int main(int argc, char **argv)
     }
     freeaddrinfo(result);
 
-    snprintf(query, sizeof(query), "figlet /%s %s\r\n", font, text);
+    //snprintf(query, sizeof(query), "figlet /%s %s\r\n", argv[1], argv[2]);
+    snprintf(query, sizeof(query), "figlet /%s %s\r\n", "cosmic", "ilia");
     while( (number_read = read(sockfd, &buf[length], SIZE_BUF - length)) > 0){
-	length = length + number_read;
-	if (buf[length - 1] == '.' && buf[length - 2] == '\n')
-		break;
+	    length = length + number_read;
+	    if (buf[length - 1] == '.' && buf[length - 2] == '\n')
+		   break;
     }
-    
+
     if(write(sockfd, query, strlen(query)) < 0){
 	close (sockfd);
 	printf("write error.\n");
 	exit(1);
     }
-    memset(buf, 0, SIZE_BUF);
+    //memset(buf, 0, SIZE_BUF);
     while( (number_read = read(sockfd, &buf[length], SIZE_BUF - length)) > 0){
-	length = length + number_read;
-	//if (buf[length - 1] == '.' && buf[length - 2] == '\n')
-		//break;
+	    length = length + number_read;
+	    if (buf[length - 1] == '.' && buf[length - 2] == '\n')
+		   break;
     }
     puts(buf);
     shutdown(sockfd, SHUT_RDWR);
